@@ -1,0 +1,2 @@
+class Crash < ApplicationRecord
+end

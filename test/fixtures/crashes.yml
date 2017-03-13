@@ -1,0 +1,45 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  case_id: 1
+  year: 1
+  month: 1
+  month_text: MyString
+  day: 1
+  day_week: 1
+  day_week_text: MyString
+  hour: 1
+  time_order: 1
+  crash_factor: 1
+  weather: 1
+  fatals: 1
+  drunk: 1
+  latitude: 1.5
+  longitude: 1.5
+  county: MyString
+  state: MyString
+  state_fips: 1
+  county_fips: 1
+  fips: 1
+
+two:
+  case_id: 1
+  year: 1
+  month: 1
+  month_text: MyString
+  day: 1
+  day_week: 1
+  day_week_text: MyString
+  hour: 1
+  time_order: 1
+  crash_factor: 1
+  weather: 1
+  fatals: 1
+  drunk: 1
+  latitude: 1.5
+  longitude: 1.5
+  county: MyString
+  state: MyString
+  state_fips: 1
+  county_fips: 1
+  fips: 1
