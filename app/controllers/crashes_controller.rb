@@ -12,5 +12,7 @@ class CrashesController < ApplicationController
   def search
     @year = params[:year]
     @state = params[:state]
+    @crashes = Crash.where({:year => @year, :state => @state})
+    @counties = @crashes.pluck(:county).uniq
   end
 end
