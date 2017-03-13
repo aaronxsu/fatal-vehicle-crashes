@@ -1,0 +1,13 @@
+<p>Index page</p>
+<div>
+  <% @years.each do |year| %>
+    <a class='index-year' id='<%= year.to_s %>' href='#'><%= year %></a>
+    <div class='index-states'>
+      <ul>
+        <% @states.each do |state| %>
+          <li><%= link_to state, search_crashes_path(@crashes, :year => year, :state => state)%></li>
+        <% end %>
+      </ul>
+  </div>
+  <% end %>
+</div>
