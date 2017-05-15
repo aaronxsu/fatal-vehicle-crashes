@@ -1,18 +1,20 @@
+require 'open-uri'
+require 'uri'
+require 'net/http'
+require 'json'
+
 class CrashesController < ApplicationController
   def index
-    @crashes = Crash.all
-    @years = (2004..2013).to_a
-    @states = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida'] +
-              ['Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts'] +
-              ['Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico'] +
-              ['New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina'] +
-              ['South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming']
+
+    open('https://raw.githubusercontent.com/aaronxsu/MyData/master/PA_counties_w_crash_count_by_year.geojson') do |f|
+      @county = JSON.parse(f.read)
+    end
+
+    js :county => @county
+
   end
 
   def search
-    @year = params[:year]
-    @state = params[:state]
-    @crashes = Crash.where({:year => @year, :state => @state})
-    @counties = @crashes.pluck(:county).uniq
+
   end
 end

@@ -1,3 +1,3 @@
 # README
 
-Map fatal vehicle crashes in the U.S. from 2004 to 2013.
+Map fatal vehicle crashes in Pennsylvania from 2004 to 2013.

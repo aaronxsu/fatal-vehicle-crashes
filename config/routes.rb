@@ -5,4 +5,6 @@ Rails.application.routes.draw do
       get 'search'
     end
   end
+
+  root to: "crashes#index"
 end

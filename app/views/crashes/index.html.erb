@@ -1,13 +1,51 @@
-<p>Index page</p>
-<div>
-  <% @years.each do |year| %>
-    <a class='index-year' id='<%= year.to_s %>' href='#'><%= year %></a>
-    <div class='index-states'>
-      <ul>
-        <% @states.each do |state| %>
-          <li><%= link_to state, search_crashes_path(@crashes, :year => year, :state => state)%></li>
-        <% end %>
-      </ul>
-  </div>
-  <% end %>
+<div class='mdl-layout mdl-js-layout mdl-layout--fixed-header'>
+  <header class='mdl-layout__header'>
+    <div class='mdl-layout__header-row index-page'>
+      <span class='mdl-layout-title index-page-title'>Fatal Vehicle Crashes in Pennsylvania, 2004 - 2013</span>
+    </div>
+  </header>
+
+  <main class='mdl-layout__content index-layout-content'>
+    <div class='page-content index-page-content'>
+      <!-- Map grid -->
+      <div class='mdl-grid index-map-grid'>
+        <div class='mdl-cell mdl-cell--2-col'></div>
+        <div class='mdl-cell mdl-cell--8-col' id='index-map'></div>
+        <div class='mdl-cell mdl-cell--2-col'></div>
+      </div>
+      <!-- Slider grid -->
+      <div class='mdl-grid index-play-grid'>
+        <div class='mdl-cell mdl-cell--2-col'></div>
+        <div class='mdl-cell mdl-cell--8-col' id='index-play'>
+          <div class='mdl-grid'>
+            <div class='mdl-cell mdl-cell--3-col'></div>
+            <div class='mdl-cell mdl-cell--6-col'>
+              <div class='mdl-grid'>
+                <div class='mdl-cell mdl-cell--8-col'>
+                  <p style="width:300px" id='p-index-year-slider'>
+                    <input class="mdl-slider mdl-js-slider" id='index-year-slider' type="range" min="2004" max="2013" value="2004" tabindex="0">
+                  </p>
+                </div>
+                <div class='mdl-cell mdl-cell--4-col'>
+                  <p id='slider-selected-year'>2004</p>
+                </div>
+              </div>
+            </div>
+            <div class='mdl-cell mdl-cell--3-col'></div>
+          </div>
+        </div>
+        <div class='mdl-cell mdl-cell--2-col'></div>
+      </div>
+
+
+      <%= form_tag(search_crashes_path, method: "get") do %>
+        <%= label_tag(:year, "Year:") %>
+        <%= text_field_tag(:year) %>
+        <%= label_tag(:fips, "FIPS:") %>
+        <%= text_field_tag(:fips) %>
+        <%= submit_tag("Search", :id => 'btn-search-submit') %>
+      <% end %>
+
+    </div>
+  </main>
 </div>

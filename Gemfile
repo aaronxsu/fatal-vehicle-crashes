@@ -35,6 +35,9 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'therubyracer', platforms: :ruby
+gem 'material_icons'
+gem 'material_design_lite-rails', '~> 1.3'
+
 gem 'paloma', '~> 5.0.0'
 
 # gem 'gon'

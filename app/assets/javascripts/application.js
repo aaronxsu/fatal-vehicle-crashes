@@ -12,5 +12,11 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
+// require turbolinks
+//= require material
+//= require paloma
+//= require underscore-min
+//= require leaflet
+//= require turf_min
+//= require functions
 //= require_tree .
