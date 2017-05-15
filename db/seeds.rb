@@ -1,9 +1,10 @@
 require 'csv'
 
-csv_text = File.read(Rails.root.join("lib", "seeds", "all_accidents_state_county.csv"))
+csv_text = File.read(Rails.root.join("lib", "seeds", "PA_crashes.csv"))
 csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
 csv.each do |row|
   t = Crash.new
+  t.case_id = row['case_id']
   t.year = row['year']
   t.month = row['month']
   t.month_text = row['month_text']
@@ -20,9 +21,7 @@ csv.each do |row|
   t.longitude = row['longitude']
   t.county = row['county']
   t.state = row['state']
-  t.state_fips = row['state_fips']
-  t.county_fips = row['county_fips']
   t.fips = row['fips']
   t.save
-  puts "#{t.id} saved"
+  puts "#{t.case_id} saved"
 end

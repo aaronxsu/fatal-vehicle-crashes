@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170313005227) do
+ActiveRecord::Schema.define(version: 20170515015038) do
 
   create_table "crashes", force: :cascade do |t|
     t.integer  "year"
@@ -29,11 +29,10 @@ ActiveRecord::Schema.define(version: 20170313005227) do
     t.float    "longitude"
     t.string   "county"
     t.string   "state"
-    t.integer  "state_fips"
-    t.integer  "county_fips"
     t.integer  "fips"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.integer  "case_id"
   end
 
 end
