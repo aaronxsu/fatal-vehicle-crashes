@@ -149,7 +149,17 @@ Paloma.controller('Crashes', {
 
   },
 
-  show: function(){
+  search: function(){
+
+    var crashes = this.params.crashes,
+        roads = this.params.roads,
+        year = this.params.year,
+        fips = this.params.fips;
+
+    console.log(crashes);
+    console.log(roads);
+    console.log(year);
+    console.log(fips);
 
   }
 })
