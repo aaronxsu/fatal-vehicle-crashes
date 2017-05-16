@@ -15,6 +15,7 @@
 // require turbolinks
 //= require material
 //= require paloma
+//= require simple-statistics_min
 //= require underscore-min
 //= require leaflet
 //= require turf_min
