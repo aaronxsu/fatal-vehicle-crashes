@@ -18,6 +18,7 @@
 //= require simple-statistics_min
 //= require underscore-min
 //= require leaflet
+//= require torque.full.uncompressed
 //= require turf_min
 //= require functions
 //= require_tree .

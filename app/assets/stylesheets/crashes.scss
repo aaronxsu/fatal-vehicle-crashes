@@ -81,3 +81,32 @@ p#slider-selected-year{
   width: 100%;
   text-align: left;
 }
+
+#div-subcat-ckbox{
+  width: 40px;
+	height: 10px;
+	background: #b0b0b0;
+	margin: 10px 0px 10px 10px;
+	position: relative;
+	border-radius: 3px;
+  display: inline-block;
+}
+
+#div-subcat-ckbox label{
+  display: block;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	transition: all .5s ease;
+	cursor: pointer;
+	position: absolute;
+	top: -3px;
+	left: -3px;
+	background: #f9f9f9;
+  border: 1px solid #d3d3d3;
+}
+
+#div-subcat-ckbox input[type=checkbox]:checked + label {
+	left: 27px;
+  background: #3844b3;
+}

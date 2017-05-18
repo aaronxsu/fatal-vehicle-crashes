@@ -274,6 +274,9 @@ Paloma.controller('Crashes', {
         countyCentroid = this.params.county_centroid, //[lat, lng] of the county centroid, from github county centorid data
         countyName = this.params.county_name; //county name
 
+    //the torque layer to store carto time series map tiles
+    var torqueLayer;
+
     //hide all attribute filter dropdown
     $(".filter-dropdown").hide();
     //populate the title with county name and year
@@ -343,17 +346,109 @@ Paloma.controller('Crashes', {
 
 
     //when one of three tabs is clicked
-    //clear the current displayed crash points (all or filtered)
-    //add all crash points to the map
     $(".mdl-tabs__tab").on("click", function(e){
+      //if there is any static crash points rendered (all or filtered)
+      //clear them
+      //then add all crash points to the map
       if(layerCrashPoints.length){
         _.each(layerCrashPoints, function(eachLayer){ mapSearch.removeLayer(eachLayer);})
         layerCrashPoints = [];
+        layerCrashPoints = _.map(crashes, function(eachCrashObject){
+          return addCrashPoints(year, eachCrashObject, mapSearch)
+        });
       }
-      layerCrashPoints = _.map(crashes, function(eachCrashObject){
-        return addCrashPoints(year, eachCrashObject, mapSearch)
-      });
+      //if there is a torque layer rendered, clear it
+      if(!_.isEmpty(torqueLayer)){
+        mapSearch.removeLayer(torqueLayer);
+        torqueLayer = {};
+      }
+      //if the torque layer switch is on, turn it off
+      if($("#switch-time-series").prop("checked")){
+        $("#switch-time-series").click();
+      }
     });
+
+    //when the time series switch is on
+    //clear whatever is on the map
+    //render the torque map by carto
+    $("#switch-time-series").on("click", function(e){
+      var status = $(this).prop("checked");
+      //if the swith is on
+      if(status){
+        //clear the rendered static points
+        if(layerCrashPoints.length){
+          _.each(layerCrashPoints, function(eachLayer){ mapSearch.removeLayer(eachLayer);})
+          layerCrashPoints = [];
+        }
+        //just in case if there is a torque layer on the map, clean it
+        if(!_.isEmpty(torqueLayer)){
+          mapSearch.removeLayer(torqueLayer);
+          torqueLayer = {};
+        }
+        //render the new torque layer
+        var CARTOCSS = [
+          "Map {",
+            "-torque-frame-count:256;",
+            "-torque-animation-duration:30;",
+            "-torque-time-attribute:'time_order';",
+            "-torque-aggregation-function:'count(cartodb_id)';",
+            "-torque-resolution:4;",
+            "-torque-data-aggregation:linear;",
+          "}",
+          "#pa_crashes{",
+            "comp-op: lighter;",
+            "marker-fill-opacity: 0.9;",
+            "marker-line-color: #FFFFFF;",
+            "marker-line-width: 1;",
+            "marker-line-opacity: 1;",
+            "marker-type: ellipse;",
+            "marker-width: 6;",
+            "marker-fill: #FFA300;",
+          "}",
+          "#pa_crashes[frame-offset=1] {",
+           "marker-width:8;",
+           "marker-fill-opacity:0.45;",
+          "}",
+          "#pa_crashes[frame-offset=2] {",
+           "marker-width:10;",
+           "marker-fill-opacity:0.225;",
+          "}",
+          "#pa_crashes[frame-offset=3] {",
+           "marker-width:12;",
+           "marker-fill-opacity:0.15;",
+          "}",
+          "#pa_crashes[frame-offset=4] {",
+          " marker-width:14;",
+           "marker-fill-opacity:0.1125;",
+          "}"
+        ].join('\n');
+
+        torqueLayer = new L.TorqueLayer({
+          user       : 'xunzesu',
+          table      : "pa_crashes",
+          query      : "SELECT * FROM pa_crashes WHERE year = " + year + " AND fips = " + fips,
+          zIndex     : 1000,
+          cartocss   : CARTOCSS
+        });
+
+        torqueLayer.error(function(err){
+          for(error in err){ console.warn(err[error]); }
+        });
+
+        torqueLayer.addTo(mapSearch);
+        torqueLayer.play();
+
+      }else {
+        //if the swith is off
+        //clear the torque time series map
+        mapSearch.removeLayer(torqueLayer);
+        torqueLayer = {};
+        //add static points back to the map
+        layerCrashPoints = _.map(crashes, function(eachCrashObject){
+          return addCrashPoints(year, eachCrashObject, mapSearch)
+        });
+      }
+    })
 
     //when the dropdown option is clicked, fill in the text field
     //clear all points on the map
@@ -394,7 +489,6 @@ Paloma.controller('Crashes', {
     //clear any dropdown text field
     $('input[id*="radio-"]').on("click", function(e){
       var id = this.id.split("-")[1];
-      console.log(id)
       $(".filter-dropdown").hide();
       $("#filter-" + id + "-dropdown").show();
       $("input[id*='-dropdown-selected']").val("");
