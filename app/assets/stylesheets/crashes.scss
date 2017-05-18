@@ -1,26 +1,38 @@
 html body{
   padding: 0;
   margin:0;
+  overflow:hidden;
 }
 
-div.mdl-layout__header-row.index-page{
+div.mdl-layout__header-row.index-page,
+div.mdl-layout__header-row.search-page{
   padding-left: 20px;
 }
 
-main.mdl-layout__content.index-layout-content,
-div.page-content.index-page-content,
-div.mdl-grid.index-map-grid,
-div.mdl-grid.index-play-grid,
-#index-map,
-#index-play{
-  padding: 0;
-  margin: 0;
+// main.mdl-layout__content.index-layout-content,
+// main.mdl-layout__content.search-layout-content,
+// div.page-content.index-page-content,
+// div.page-content.search-page-content
+// div.mdl-grid.index-map-grid,
+// div.mdl-grid.index-play-grid,
+// div.mdl-grid.search-content-grid,
+// #index-map,
+// #index-play,
+// #sidebar,
+// #search-map{
+//   padding: 0;
+//   margin: 0;
+// }
+
+#sidebar,
+#search-map{
+  height: 100vh;
 }
 
 #index-map{
   height: 700px;
   background-color: white;
-  border: 1px solid red;
+  // border: 1px solid red;
 }
 
 .info {
@@ -50,4 +62,22 @@ div.mdl-grid.index-play-grid,
 
 p#slider-selected-year{
   font-size: 18px;
+}
+
+.mdl-cell{
+  border: 1px solid red;
+}
+
+#filter-month-radio,
+#filter-day-radio,
+#filter-hour-radio,
+#filter-fatals-radio,
+#filter-drunk-radio,
+#filter-weather-radio{
+  padding: 20px 0 20px 0;
+}
+
+#btn-search-back{
+  width: 100%;
+  text-align: left;
 }

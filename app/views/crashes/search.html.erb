@@ -1,1 +1,81 @@
-<%= @crashes %><br>
+<div class='mdl-layout mdl-js-layout mdl-layout--fixed-header'>
+  <!-- Header -->
+  <header class='mdl-layout__header'>
+    <div class='mdl-layout__header-row search-page'>
+      <span class='mdl-layout-title search-page-title'>Fatal Vehicle Crashes in <span id='search-header-county'></span>, PA, in <span id='search-header-year'></span></span>
+    </div>
+  </header>
+  <!-- Main Content -->
+  <main class='mdl-layout__content search-layout-content'>
+    <div class='page-content search-page-content'>
+
+      <div class='mdl-grid mdl-grid--no-spacing search-content-grid'>
+        <!-- Sidebar -->
+        <div class='mdl-cell mdl-cell--3-col' id='sidebar'>
+          <!-- Back Button -->
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--12-col">
+              <%= link_to raw("<i class='material-icons'>keyboard_return</i>BACK"), crashes_path, :class => "mdl-button mdl-js-button mdl-button--primary", :id => "btn-search-back" %>
+            </div>
+          </div>
+          <!-- Tabs -->
+          <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <div class="mdl-tabs__tab-bar">
+                <a href="#time-series-panel" class="mdl-tabs__tab is-active">Motion</a>
+                <a href="#attr-filter-panel" class="mdl-tabs__tab">Attribute Filter</a>
+                <a href="#location-filter-panel" class="mdl-tabs__tab">Location Filter</a>
+            </div>
+            <!-- First Tab Content -->
+            <div class="mdl-tabs__panel is-active" id="time-series-panel">
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--6-col" style="font-size: 16px; padding: 20px 0px;">Crashes in Motion</div>
+                <div class="mdl-cell mdl-cell--6-col" style="padding: 20px 0px;">
+                  <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-time-series">
+                    <input type="checkbox" id="switch-time-series" class="mdl-switch__input">
+                    <span class="mdl-switch__label"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!-- Second Tab Content -->
+            <div class="mdl-tabs__panel" id="attr-filter-panel">
+              <!-- Month Filter -->
+              <% @attr_filter_html.each do |attribute| %>
+                <div class="mdl-grid" id="grid-filter-<%= attribute['id'] %>">
+                  <!-- Radio button -->
+                  <div class="mdl-cell mdl-cell--6-col filter-radio" id="filter-<%= attribute['id'] %>-radio">
+                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="radio-<%= attribute['id'] %>">
+                      <input type="radio" id="radio-<%= attribute['id'] %>" class="mdl-radio__button" name="options" value="<%= attribute['id'] %>">
+                      <span class="mdl-radio__label"><%= attribute['label'] %></span>
+                    </label>
+                  </div>
+                  <!-- Dropdown -->
+                  <div class="mdl-cell mdl-cell--6-col filter-dropdown" id="filter-<%= attribute['id'] %>-dropdown">
+                    <!-- Text field -->
+                    <div class="mdl-textfield mdl-js-textfield">
+                      <input class="mdl-textfield__input" type="text" id="filter-<%= attribute['id'] %>-dropdown-selected">
+                      <!-- Dropdown menu -->
+                      <button id="btn-filter-<%= attribute['id'] %>-dropdown" class="mdl-button mdl-js-button mdl-button--icon" style="left: 85%">
+                        <i class="material-icons">keyboard_arrow_down</i>
+                      </button>
+                      <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="btn-filter-<%= attribute['id'] %>-dropdown" id="dropdown-<%= attribute['id'] %>"></ul>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <!-- Third Tab Content -->
+            <div class="mdl-tabs__panel" id="location-filter-panel">
+              <ul>
+                <li>Viserys</li>
+                <li>Daenerys</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class='mdl-cell mdl-cell--9-col' id='search-map'></div>
+      </div>
+
+    </div>
+  </main>
+</div>
