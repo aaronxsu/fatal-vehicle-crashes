@@ -38,7 +38,7 @@
       </div>
 
 
-      <%= form_tag(search_crashes_path, method: "get") do %>
+      <%= form_tag(search_crashes_path, method: "get", style: "display:none;") do %>
         <%= label_tag(:year, "Year:") %>
         <%= text_field_tag(:year) %>
         <%= label_tag(:fips, "FIPS:") %>

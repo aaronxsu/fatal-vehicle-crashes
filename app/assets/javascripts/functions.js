@@ -33,11 +33,11 @@ var crashCountCategory = function(count, breaksArray, length){
 };
 
 var fillColorCrashCount = function(category){
-  return category == 5 ? '#800026' : //the 5th category
-         category == 4 ? '#BD0026' : //the 4th category
-         category == 3 ? '#E31A1C' : //the 3rd category
-         category == 2 ? '#FC4E2A' : //the 2nd category
-                         '#FFEDA0';  //the 1st category
+  return category == 5 ? '#2a3386' : //the 5th category
+         category == 4 ? '#3844b3' : //the 4th category
+         category == 3 ? '#5a65cb' : //the 3rd category
+         category == 2 ? '#878fda' : //the 2nd category
+                         '#b4b9e8';  //the 1st category
 };
 
 var countyStyle = function(feature){
@@ -581,7 +581,6 @@ Paloma.controller('Crashes', {
             $("#div-radius-input").show()
             $("#btn-location-filter").show();
 
-            console.log(layerSearchedPlace);
             //programatically click the dropdown to collapse the options -- this is a work around, the collapse shoule have happened by itself though
             $("#location-search-menu").click();
           })
@@ -636,18 +635,6 @@ Paloma.controller('Crashes', {
       $("#places-dropdown").empty();
       $("#div-radius-input").hide();
     })
-
-
-
-
-
-
-    console.log("Crashes:", crashes);
-    console.log("Roads:", roads);
-    console.log("Year:", year);
-    console.log("FIPS:", fips);
-    console.log("County Centroids:", countyCentroid);
-    console.log("County Names:", countyName);
 
   }
 })
