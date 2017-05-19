@@ -66,11 +66,38 @@
             </div>
             <!-- Third Tab Content -->
             <div class="mdl-tabs__panel" id="location-filter-panel">
-              <ul>
-                <li>Viserys</li>
-                <li>Daenerys</li>
-              </ul>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                  <!-- Location Input -->
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="location-filter-address">
+                    <label class="mdl-textfield__label" for="location-filter-address">Location...</label>
+                    <button id="location-search-menu" class="mdl-button mdl-js-button mdl-button--icon" style="left: 85%">
+                      <i class="material-icons">more_vert</i>
+                    </button>
+                    <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" id="places-dropdown" for="location-search-menu">
+                    </ul>
+                  </div>
+                  <!-- Place Search Button -->
+                  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id='btn-location-search' disabled>Search</button>
+                  <!-- Radius Input -->
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id='div-radius-input'>
+                    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="location-filter-radius">
+                    <label class="mdl-textfield__label" for="location-filter-radius">Radius (miles)...</label>
+                    <span class="mdl-textfield__error">Please type a number.</span>
+                  </div>
+                  <!-- Filter Button -->
+                  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id='btn-location-filter' disabled>Filter</button>
+                </div>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id='btn-location-clear' disabled>Clear</button>
+                </div>
+              </div>
+
             </div>
+
           </div>
         </div>
         <div class='mdl-cell mdl-cell--9-col' id='search-map'></div>

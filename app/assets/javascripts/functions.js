@@ -55,11 +55,6 @@ var lineWidth = function(breaks, crashCount){
   return crashCount >= breaks[2][0]? 8 :
          crashCount >= breaks[1][0]? 5 :
                                      2;
-
-  // console.log(breaks, crashCount)
-  // if(crashCount >= breaks[2][0]){ return 10; }
-  // else if(crashCount >= breaks[1][0]){ return 1; }
-  // else { return 1; }
 };
 
 var lineColor = function(breaks, crashCount){
@@ -167,6 +162,8 @@ var pluckCrashInfoValues = function(dataCrash, key){
           value();
 }
 
+
+
 Paloma.controller('Crashes', {
 
   index: function(){
@@ -266,6 +263,13 @@ Paloma.controller('Crashes', {
 
   search: function(){
 
+    //hide the clear button under the location filter tab on start
+    $("#btn-location-clear").hide();
+
+    //hide the radius input and the filter button on page load
+    $("#div-radius-input").hide()
+    $("#btn-location-filter").hide();
+
     //variables sent from the back end controller
     var crashes = this.params.crashes, //an array of crash point objects from db query based on county fips and year
         roads = this.params.roads, //geojson from github based on county fips
@@ -276,6 +280,11 @@ Paloma.controller('Crashes', {
 
     //the torque layer to store carto time series map tiles
     var torqueLayer;
+
+    //the user selected place from the places dropdown. contains id, name, and location
+    var selectedPlace = {};
+    //a layer storing the search point marker ploted on the map
+    var layerSearchedPlace = {};
 
     //hide all attribute filter dropdown
     $(".filter-dropdown").hide();
@@ -366,6 +375,22 @@ Paloma.controller('Crashes', {
       if($("#switch-time-series").prop("checked")){
         $("#switch-time-series").click();
       }
+
+      //make the user searched place and the marker layer empty
+      selectedPlace = {};
+      if(!_.isEmpty(layerSearchedPlace)){
+        mapSearch.removeLayer(layerSearchedPlace);
+        layerSearchedPlace = {};
+      }
+      $("#location-filter-address").val("");
+      $("#location-filter-radius").val("");
+      $("#btn-location-search").prop("disabled", true);
+      $("#btn-location-filter").prop("disabled", true).hide();
+      $("#btn-location-clear").prop("disabled", true).hide();
+      $("#places-dropdown").empty();
+      $("#div-radius-input").hide();
+
+
     });
 
     //when the time series switch is on
@@ -493,6 +518,128 @@ Paloma.controller('Crashes', {
       $("#filter-" + id + "-dropdown").show();
       $("input[id*='-dropdown-selected']").val("");
     });
+
+    //when the user starts typing, clear all crash points on the map
+    //--no need to clear torque layer, because it should be cleared when the location filter tab is clicked
+    $("#location-filter-address").keyup(function(e){
+      if(layerCrashPoints.length){
+        _.each(layerCrashPoints, function(point){ mapSearch.removeLayer(point);});
+        layerCrashPoints = []
+      };
+
+      if($(this).val()){
+        $("#btn-location-search").prop("disabled", false);
+      };
+    })
+
+    //when the place search button is clicked
+    $("#btn-location-search").on("click", function(e){
+      //make the place dropdown empty
+      $("#places-dropdown").empty();
+      //call mapzen autocomplete API to get places based on user input
+      var input = $("#location-filter-address").val();
+      if(input){
+        var uri = "https://search.mapzen.com/v1/autocomplete?focus.point.lat=" + countyCentroid[0] + "&focus.point.lon=" + countyCentroid[1] + "&text=" + input + "&api_key=mapzen-qJmfq5U";
+        $.ajax(uri).done(function(data){
+          //API call returned places with id, name, and location
+          var places = _.map(data.features, function(datum){
+            return {
+              id: datum.properties.id,
+              name: datum.properties.name,
+              location: [datum.geometry.coordinates[1], datum.geometry.coordinates[0]]
+            };
+          });
+          //append all these places' names and ids to the places dropdown
+          _.each(places, function(eachPlace){
+            $("#places-dropdown").append("<li class='mdl-menu__item places-dropdown' id='" + eachPlace.id + "'>" + eachPlace.name +"</li>");
+          });
+          //when one of the places in the dropdown is clicked
+          $(".mdl-menu__item.places-dropdown").on('click', function(e){
+            //match the clicked place's element id with its real ID and plot this place
+            var id = this.id;
+            layerSearchedPlace = _.chain(places)
+                                  .map(function(place){
+                                     if(place.id == id){
+                                       selectedPlace = place;
+                                       return L.circleMarker(place.location, {
+                                         radius: 8,
+                                         fillColor: "#44b338",
+                                         stroke: false,
+                                         fillOpacity: 0.8
+                                       })
+                                       .bindPopup(place.name)
+                                       .addTo(mapSearch);
+                                     }
+                                   })
+                                   .compact()
+                                   .first()
+                                   .value();
+
+            //populate the place adress input with this selected place's name
+            $("#location-filter-address").val(selectedPlace.name);
+            //show the radius input box and filter button
+            $("#div-radius-input").show()
+            $("#btn-location-filter").show();
+
+            console.log(layerSearchedPlace);
+            //programatically click the dropdown to collapse the options -- this is a work around, the collapse shoule have happened by itself though
+            $("#location-search-menu").click();
+          })
+        })
+      }
+    })
+
+    $("#location-filter-radius").keyup(function(e){
+      if($(this).val()){
+        $("#btn-location-filter").prop("disabled", false);
+      }
+    });
+
+    $("#btn-location-filter").on("click", function(e){
+      var radius = $("#location-filter-radius").val();
+
+      var pointBuffer = turf.buffer(turf.point(selectedPlace.location), radius, 'miles');
+
+      var filteredCrashes = _.filter(crashes, function(eachCrash){
+        return turf.inside(turf.point([eachCrash.latitude, eachCrash.longitude]), pointBuffer);
+      })
+
+      layerCrashPoints = _.map(filteredCrashes, function(eachCrash){
+        return addCrashPoints(year, eachCrash, mapSearch);
+      })
+
+      $("#btn-location-clear").prop("disabled", false).show();
+    });
+
+    //if the clear button under the location filter tab is clicked
+    $("#btn-location-clear").on("click", function(e){
+      //clear the selected place both the place object and the place map layer
+      selectedPlace = {};
+      if(!_.isEmpty(layerSearchedPlace)){
+        mapSearch.removeLayer(layerSearchedPlace);
+        layerSearchedPlace = {};
+      }
+      //clear the plotted crash points
+      if(layerCrashPoints.length){
+        _.each(layerCrashPoints, function(eachLayer){ mapSearch.removeLayer(eachLayer);})
+        layerCrashPoints = [];
+        layerCrashPoints = _.map(crashes, function(eachCrashObject){
+          return addCrashPoints(year, eachCrashObject, mapSearch)
+        });
+      }
+      //clean the mess of all the text inputs and the buttons
+      $("#location-filter-address").val("");
+      $("#location-filter-radius").val("");
+      $("#btn-location-search").prop("disabled", true);
+      $("#btn-location-filter").prop("disabled", true).hide();
+      $("#btn-location-clear").prop("disabled", true).hide();
+      $("#places-dropdown").empty();
+      $("#div-radius-input").hide();
+    })
+
+
+
+
 
 
     console.log("Crashes:", crashes);
