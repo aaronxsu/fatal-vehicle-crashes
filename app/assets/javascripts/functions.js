@@ -453,7 +453,9 @@ Paloma.controller('Crashes', {
           table      : "pa_crashes",
           query      : "SELECT * FROM pa_crashes WHERE year = " + year + " AND fips = " + fips,
           zIndex     : 1000,
-          cartocss   : CARTOCSS
+          cartocss   : CARTOCSS,
+          tiler_protocol: "https",
+          tiler_port: 443
         });
 
         torqueLayer.error(function(err){
